@@ -1,0 +1,8 @@
+{
+    "db": {
+        "user": "root",
+        "pass": "hellraiser2511",
+        "addr": "127.0.0.1:3306",
+        "db_name": "qr_payments"
+    }
+}
