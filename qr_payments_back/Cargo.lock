@@ -1739,6 +1739,7 @@ dependencies = [
  "num-traits",
  "rand",
  "regex",
+ "rust_decimal",
  "saturating",
  "serde",
  "serde_json",
@@ -2097,8 +2098,10 @@ version = "0.1.0"
 dependencies = [
  "error_mapper",
  "mysql",
+ "rust_decimal",
  "serde",
  "serde_json",
+ "the_logger",
  "tokio",
 ]
 
@@ -2623,6 +2626,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "06794f8f6c5c898b3275aebefa6b8a1cb24cd2c6c79397ab15774837a0bc5755"
 dependencies = [
  "winapi-util",
+]
+
+[[package]]
+name = "the_logger"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fc684008290d2c9ea6188b720264a87ca980efee097dce8687c30eb91ab36daf"
+dependencies = [
+ "chrono",
+ "lazy_static",
+ "tokio",
 ]
 
 [[package]]
