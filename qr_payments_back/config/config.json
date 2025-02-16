@@ -1,4 +1,9 @@
 {
+    "api": {
+        "addr": "127.0.0.1",
+        "port": 8090,
+        "workers": 16
+    },
     "db": {
         "user": "root",
         "pass": "hellraiser2511",

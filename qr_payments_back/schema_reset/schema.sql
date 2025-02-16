@@ -8,10 +8,14 @@ CREATE TABLE `wallets` (
 );
 
 CREATE TABLE `transactions` (
-	`ID` INT PRIMARY KEY,
+	`ID` INT PRIMARY KEY AUTO_INCREMENT,
 	`wallets_ID` INT NULL DEFAULT NULL,
 	`amount` DECIMAL(12, 2),
-	CONSTRAINT `transactions_wallets_ID` FOREIGN KEY (`wallets_ID`) REFERENCES `wallets` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
+	`status` ENUM('Initialized', 'Confirmed', 'Declined', 'Cancelled', 'InternalError', 'Log') NOT NULL DEFAULT 'Initialized',
+	`token` VARCHAR(32) DEFAULT NULL,
+	`errors` VARCHAR(128) DEFAULT NULL,
+	CONSTRAINT `transactions_wallets_ID` FOREIGN KEY (`wallets_ID`) REFERENCES `wallets` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE,
+	INDEX `transactions_token` (`token`)
 );
 
 INSERT INTO `wallets` (`balance`) VALUES (10000);

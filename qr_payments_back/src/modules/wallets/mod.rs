@@ -1,27 +1,28 @@
-use mysql::prelude::FromRow;
 use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
 
-use crate::{datatypes::WalletsIdType, row_to_data};
+use crate::datatypes::WalletsIdType;
 
-#[derive(Debug, Default, Clone, Copy)]
-pub struct Wallets {
-    id: WalletsIdType,
-    balance: Decimal
+mod db;
+pub mod services;
+
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize)]
+pub struct Wallet {
+    pub id: WalletsIdType,
+    pub balance: Decimal,
 }
 
-impl FromRow for Wallets {
-    fn from_row(row: mysql::Row) -> Self
-        where
-            Self: Sized, {
-        Self {
-            id: row_to_data!(row, "ID", "wallets", WalletsIdType),
-            balance: row_to_data!(row, "balance", "wallets", Decimal)
+impl Wallet {
+    pub(in crate::modules) fn validate_balance(&self, requested_amount: Decimal) -> bool {
+        //  If requested amount is positive it's a credit, authorize without further validations
+        match requested_amount.cmp(&Decimal::ZERO) {
+            std::cmp::Ordering::Equal | std::cmp::Ordering::Greater => return true,
+            std::cmp::Ordering::Less => {}
         }
-    }
 
-    fn from_row_opt(_row: mysql::Row) -> Result<Self, mysql::FromRowError>
-        where
-            Self: Sized {
-        unimplemented!()
+        match self.balance.abs().cmp(&requested_amount.abs()) {
+            std::cmp::Ordering::Greater | std::cmp::Ordering::Equal => true,
+            std::cmp::Ordering::Less => false,
+        }
     }
 }

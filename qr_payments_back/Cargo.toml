@@ -1,5 +1,5 @@
 [package]
-name = "qr_payments_back"
+name = "qr_payments_backend"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,3 +11,8 @@ tokio = { version = "1.41.0", features = ["full"] }
 error_mapper = { version = "0.3.11"}
 the_logger = "0.5.3"
 rust_decimal = "1.36.0"
+actix-web = "4"
+chrono = "0.4.39"
+strum = { version = "0.27", features = ["derive"] }
+rand = "0.9.0"
+rand_distr = "0.5.0"

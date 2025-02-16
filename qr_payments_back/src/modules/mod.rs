@@ -1,2 +1,2 @@
-mod transactions;
-mod wallets;
+pub mod transactions;
+pub mod wallets;

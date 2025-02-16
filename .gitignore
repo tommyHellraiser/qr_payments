@@ -1,2 +1,3 @@
 qr_payments_back/target/
 qr_payments_back/.vs
+qr_payments_back/logs/*
