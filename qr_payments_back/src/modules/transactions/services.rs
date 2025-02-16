@@ -140,6 +140,7 @@ async fn new_transaction(body: web::Json<NewTransactionRequest>) -> HttpResponse
     HttpResponse::InternalServerError().finish()
 }
 
+/// /v1/transactions/confirm
 #[post("/confirm")]
 async fn confirm_transaction(body: web::Json<PostTransactionRequest>) -> HttpResponse {
     let body = body.into_inner();
@@ -165,7 +166,12 @@ async fn confirm_transaction(body: web::Json<PostTransactionRequest>) -> HttpRes
     };
 
     //  Transaction found, confirming it
+    let previous_status = transaction.status;
     transaction.status = TransactionStatus::Confirmed;
+    if transaction.validate_previous_status(previous_status) == Some(false) {
+        log_info!(logger, "Transaction with ID: {} has an invalid previous status: {}", transaction.id, previous_status);
+        return HttpResponse::PreconditionFailed().json("Transaction has an invalid previous status")
+    }
     match transaction.update_status_and_error(&mut conn) {
         Ok(true) => {}
         Ok(false) => {

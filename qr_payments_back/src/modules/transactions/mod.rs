@@ -17,7 +17,7 @@ struct Transaction {
     errors: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, strum::Display)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, strum::Display, PartialEq, PartialOrd)]
 enum TransactionStatus {
     #[default]
     Initialized,
@@ -48,6 +48,17 @@ impl Transaction {
         None
     }
 
+    fn validate_previous_status(&self, previous_status: TransactionStatus) -> Option<bool> {
+        let previous_valid_status = self.status.previous_state();
+        if let Some(previous_valid) = previous_valid_status {
+            if previous_status != previous_valid {
+                return Some(false)
+            }
+        }
+
+        None
+    }
+
     fn generate_token(&mut self) {
         self.token = Some(
             rand::rng()
@@ -69,6 +80,17 @@ impl TransactionStatus {
             "InternalError" => Some(Self::InternalError),
             "Log" => Some(Self::Log),
             _ => None,
+        }
+    }
+
+    fn previous_state(&self) -> Option<Self> {
+        match self {
+            Self::Initialized => None,
+            Self::Confirmed => Some(Self::Initialized),
+            Self::Declined => Some(Self::Initialized),
+            Self::Cancelled => Some(Self::Initialized),
+            Self::InternalError => Some(Self::Initialized),
+            Self::Log => None,
         }
     }
 }
